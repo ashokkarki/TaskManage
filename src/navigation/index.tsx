@@ -4,8 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import EditTaskScreen from '../screens/EditTaskScreen';
 import HomeScreen from '../screens/HomeScreen';
+import { ApplicationStackParamList } from '../types';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<ApplicationStackParamList >();
 
 const Navigation = () => {
   return (

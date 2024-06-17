@@ -2,22 +2,26 @@
 import React, { useContext } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { TaskContext, Task } from '../context/TaskContext';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import * as Animatable from 'react-native-animatable';
+import { ApplicationStackParamList, NavigationProp } from '../types';
 
-type EditTaskScreenRouteProp = RouteProp<RootStackParamList, 'EditTask'>;
-type EditTaskScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EditTask'>;
+type EditTaskScreenProp = RouteProp<ApplicationStackParamList, keyof ApplicationStackParamList>
 
 type Props = {
-  navigation: EditTaskScreenNavigationProp;
-  route: EditTaskScreenRouteProp;
+  navigation: any;
+  route: any;
 };
 
-const EditTaskScreen: React.FC<Props> = ({ navigation, route }) => {
+const EditTaskScreen: React.FC<Props> = () => {
   const { editTask, toggleTaskCompletion } = useContext(TaskContext);
+  const navigation = useNavigation<NavigationProp < keyof ApplicationStackParamList > > ()
+  const route = useRoute <EditTaskScreenProp>()
+  console.warn(route.params);
+  
   const { task } = route.params;
 
   const validationSchema = Yup.object().shape({
@@ -54,8 +58,8 @@ const EditTaskScreen: React.FC<Props> = ({ navigation, route }) => {
               value={values.description}
               multiline={true}
             />
-            {touched.description && errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
-            <Button title="Save Changes" onPress={handleSubmit} />
+            {touched.description && errors.description && <Text style={styles.errorText}>{errors.description}</Text> }
+            <Button title="Save Changes" onPress={()=>{handleSubmit()}} />
             <Button
               title={task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
               onPress={() => {

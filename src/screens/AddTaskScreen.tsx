@@ -1,22 +1,27 @@
 import 'react-native-get-random-values'
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { TaskContext } from '../context/TaskContext';
 import { v4 as uuidv4 } from 'uuid';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import * as Animatable from 'react-native-animatable';
-import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { ApplicationStackParamList, NavigationProp } from '../types';
 
-type AddTaskScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AddTask'>;
 
 type Props = {
-  navigation: AddTaskScreenNavigationProp;
+  navigation: any;
 };
-
-const AddTaskScreen: React.FC<Props> = ({ navigation }) => {
+const AddTaskScreen: React.FC<Props> = () => {
   const { addTask } = useContext(TaskContext);
+  const navigation = useNavigation <NavigationProp <keyof ApplicationStackParamList> > ()
+
+  const navigationHandler = useCallback((action:string)=>{
+    if(action === 'goBack'){
+      navigation.goBack()
+    }
+  },[])
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -38,7 +43,7 @@ const AddTaskScreen: React.FC<Props> = ({ navigation }) => {
           
           addTask(newTask);
           resetForm();
-          navigation.goBack();
+          navigationHandler('goBack');
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -60,7 +65,7 @@ const AddTaskScreen: React.FC<Props> = ({ navigation }) => {
               multiline={true}
             />
             {touched.description && errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
-            <Button title="Add Task" onPress={handleSubmit} />
+            <Button title="Add Task" onPress={()=>{handleSubmit()}} />
           </View>
         )}
       </Formik>
@@ -84,5 +89,5 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-
-export default AddTaskScreen;
+const MemoizedAddTaskScreen = React.memo(AddTaskScreen)
+export default MemoizedAddTaskScreen;

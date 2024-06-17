@@ -1,23 +1,21 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { View, FlatList, RefreshControl, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Task, TaskContext } from '../context/TaskContext';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 import {  Swipeable } from 'react-native-gesture-handler';
-import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { ApplicationStackParamList, NavigationProp } from '../types';
+import { TItem } from '../types/GenericTypes';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
-type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 type Props = {
-  navigation: HomeScreenNavigationProp;
-  route: HomeScreenRouteProp;
+  navigation: any
+  route: any;
 };
-
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const HomeScreen: React.FC<Props> = ({  }) => {
   const { tasks, toggleTaskCompletion, deleteTask } = useContext(TaskContext);
   const [refreshing, setRefreshing] = useState(false);
   const swipeableRef = useRef<Swipeable | null>(null);
+  const navigation = useNavigation<NavigationProp <keyof ApplicationStackParamList> >()
 
 
   const onRefresh = () => {
@@ -41,7 +39,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     return maxStreak;
   };
 
-  const leftActions = (item) => (
+  const leftActions = (item:TItem) => (
     <View style={styles.leftActionContainer}>
       <TouchableOpacity onPress={() => {
         swipeableRef.current?.close()
@@ -52,7 +50,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 
-  const rightActions = (item) => (
+  const rightActions = (item:TItem) => (
     <View style={styles.rightActionContainer}>
       <TouchableOpacity onPress={() => {
         swipeableRef.current?.close()
@@ -68,22 +66,24 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Swipeable 
-          renderLeftActions={() => leftActions(item)} 
-          renderRightActions={() => rightActions(item)}
-          ref={swipeableRef}
-    
-          >
-            <Animated.View style={styles.taskContainer}>
-              <Text style={item.completed ? styles.completedTask : styles.task}>{item.title}</Text>
-              <Text>{item.description}</Text>
-              <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)} style={styles.markerButton} >
-                <Text style={item.completed? styles.completeButton:styles.incompleteButton} >{item.completed ? 'Incomplete' : 'Complete'}</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </Swipeable>
-        )}
+        renderItem={({ item }) => {          
+          return(
+            <Swipeable 
+            renderLeftActions={() => leftActions(item)} 
+            renderRightActions={() => rightActions(item)}
+            ref={swipeableRef}
+      
+            >
+              <Animated.View style={styles.taskContainer}>
+                <Text style={item.completed ? styles.completedTask : styles.task}>{item.title}</Text>
+                <Text>{item.description}</Text>
+                <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)} style={styles.markerButton} >
+                  <Text style={item.completed? styles.completeButton:styles.incompleteButton} >{item.completed ? 'Incomplete' : 'Complete'}</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </Swipeable>
+          )
+        }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddTask')}>

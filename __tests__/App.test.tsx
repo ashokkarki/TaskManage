@@ -1,18 +1,18 @@
 // Import necessary modules and dependencies for testing
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import { TaskProvider } from '../src/context/TaskContext';
-import App from '../App';
+import Navigation from '../src/navigation';
 
 describe('<App />', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <GestureHandlerRootView>
+      
         <TaskProvider>
-          <App />
+          <Navigation />
         </TaskProvider>
-      </GestureHandlerRootView>
+      
     );
 
     // Assert that the component rendered correctly
