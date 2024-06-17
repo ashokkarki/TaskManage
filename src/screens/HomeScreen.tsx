@@ -1,10 +1,9 @@
-// src/screens/HomeScreen.tsx
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { View, FlatList, RefreshControl, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Task, TaskContext } from '../context/TaskContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import {  Swipeable } from 'react-native-gesture-handler';
 import { RootStackParamList } from '../types';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -79,8 +78,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Animated.View style={styles.taskContainer}>
               <Text style={item.completed ? styles.completedTask : styles.task}>{item.title}</Text>
               <Text>{item.description}</Text>
-              <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)}>
-                <Text>{item.completed ? 'Mark as Incomplete' : 'Mark as Complete'}</Text>
+              <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)} style={styles.markerButton} >
+                <Text style={item.completed? styles.completeButton:styles.incompleteButton} >{item.completed ? 'Incomplete' : 'Complete'}</Text>
               </TouchableOpacity>
             </Animated.View>
           </Swipeable>
@@ -113,19 +112,20 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 18,
     right: 16,
-    backgroundColor: 'blue',
     padding: 16,
-    borderRadius: 32,
+    borderRadius:5,
+    borderWidth:1,
+    borderColor:'#f0ad4e'
   },
   addButtonText: {
-    color: 'white',
     fontSize: 18,
   },
   streakText: {
     fontSize: 18,
     marginBottom: 16,
+    color:"#000"
   },
   leftActionContainer: {
     flexDirection: 'row',
@@ -145,6 +145,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
      marginBottom: 16,
   },
+  completeButton:{
+    borderRadius:5,
+    borderWidth:1,
+    padding:'1.5%'
+  },
+  incompleteButton:{
+    borderRadius:5,
+    borderWidth:1,
+    padding:'1.5%'
+  },
+  markerButton:{ flexWrap:'wrap',marginTop:'1.5%' }
 });
 
 export default HomeScreen;

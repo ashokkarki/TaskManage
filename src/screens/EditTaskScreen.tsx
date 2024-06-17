@@ -52,6 +52,7 @@ const EditTaskScreen: React.FC<Props> = ({ navigation, route }) => {
               onChangeText={handleChange('description')}
               onBlur={handleBlur('description')}
               value={values.description}
+              multiline={true}
             />
             {touched.description && errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
             <Button title="Save Changes" onPress={handleSubmit} />

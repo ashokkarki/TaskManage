@@ -1,3 +1,4 @@
+import 'react-native-get-random-values'
 import React, { useContext } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { TaskContext } from '../context/TaskContext';
@@ -27,13 +28,14 @@ const AddTaskScreen: React.FC<Props> = ({ navigation }) => {
       <Formik
         initialValues={{ title: '', description: '' }}
         validationSchema={validationSchema}
-        onSubmit={(values, { resetForm }) => {
+        onSubmit={(values: { title: string; description: string; }, { resetForm }: any) => {
           const newTask = {
             id: uuidv4(),
             title: values.title,
             description: values.description,
             completed: false,
           };
+          
           addTask(newTask);
           resetForm();
           navigation.goBack();
@@ -55,6 +57,7 @@ const AddTaskScreen: React.FC<Props> = ({ navigation }) => {
               onChangeText={handleChange('description')}
               onBlur={handleBlur('description')}
               value={values.description}
+              multiline={true}
             />
             {touched.description && errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
             <Button title="Add Task" onPress={handleSubmit} />
