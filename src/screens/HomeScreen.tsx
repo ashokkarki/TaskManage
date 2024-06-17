@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState} from 'react';
 import { View, FlatList, RefreshControl, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Task, TaskContext } from '../context/TaskContext';
 import {  Swipeable } from 'react-native-gesture-handler';
@@ -14,7 +14,6 @@ type Props = {
 const HomeScreen: React.FC<Props> = ({  }) => {
   const { tasks, toggleTaskCompletion, deleteTask } = useContext(TaskContext);
   const [refreshing, setRefreshing] = useState(false);
-  const swipeableRef = useRef<Swipeable | null>(null);
   const navigation = useNavigation<NavigationProp <keyof ApplicationStackParamList> >()
 
 
@@ -42,7 +41,6 @@ const HomeScreen: React.FC<Props> = ({  }) => {
   const leftActions = (item:TItem) => (
     <View style={styles.leftActionContainer}>
       <TouchableOpacity onPress={() => {
-        swipeableRef.current?.close()
         navigation.navigate('EditTask', { task: item })
         }} style={styles.editButton}>
         <Text>Edit</Text>
@@ -53,7 +51,6 @@ const HomeScreen: React.FC<Props> = ({  }) => {
   const rightActions = (item:TItem) => (
     <View style={styles.rightActionContainer}>
       <TouchableOpacity onPress={() => {
-        swipeableRef.current?.close()
         deleteTask(item.id)}} style={styles.deleteButton}>
         <Text>Delete</Text>
       </TouchableOpacity>
@@ -71,14 +68,12 @@ const HomeScreen: React.FC<Props> = ({  }) => {
             <Swipeable 
             renderLeftActions={() => leftActions(item)} 
             renderRightActions={() => rightActions(item)}
-            ref={swipeableRef}
-      
             >
               <Animated.View style={styles.taskContainer}>
                 <Text style={item.completed ? styles.completedTask : styles.task}>{item.title}</Text>
                 <Text>{item.description}</Text>
                 <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)} style={styles.markerButton} >
-                  <Text style={item.completed? styles.completeButton:styles.incompleteButton} >{item.completed ? 'Incomplete' : 'Complete'}</Text>
+                  <Text style={item.completed? styles.completeButton:styles.incompleteButton} >{item.completed ? 'Incomplete' : 'Completed'}</Text>
                 </TouchableOpacity>
               </Animated.View>
             </Swipeable>

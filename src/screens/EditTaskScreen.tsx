@@ -1,4 +1,3 @@
-// src/screens/EditTaskScreen.tsx
 import React, { useContext } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { TaskContext, Task } from '../context/TaskContext';
@@ -8,27 +7,26 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import * as Animatable from 'react-native-animatable';
 import { ApplicationStackParamList, NavigationProp } from '../types';
-
-type EditTaskScreenProp = RouteProp<ApplicationStackParamList, keyof ApplicationStackParamList>
-
+ 
+type EditTaskScreenProp = RouteProp<ApplicationStackParamList, 'EditTask'>;
+ 
 type Props = {
-  navigation: any;
-  route: any;
+  navigation: StackNavigationProp<ApplicationStackParamList>;
+  route: EditTaskScreenProp;
 };
-
+ 
 const EditTaskScreen: React.FC<Props> = () => {
   const { editTask, toggleTaskCompletion } = useContext(TaskContext);
-  const navigation = useNavigation<NavigationProp < keyof ApplicationStackParamList > > ()
-  const route = useRoute <EditTaskScreenProp>()
-  console.warn(route.params);
-  
+  const navigation = useNavigation<NavigationProp<'EditTask'>>();
+  const route = useRoute<EditTaskScreenProp>();
+ 
   const { task } = route.params;
-
+ 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     description: Yup.string(),
   });
-
+ 
   return (
     <Animatable.View animation="fadeIn" style={styles.container}>
       <Formik
@@ -58,10 +56,11 @@ const EditTaskScreen: React.FC<Props> = () => {
               value={values.description}
               multiline={true}
             />
-            {touched.description && errors.description && <Text style={styles.errorText}>{errors.description}</Text> }
-            <Button title="Save Changes" onPress={()=>{handleSubmit()}} />
+            {touched.description && errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
+            <Button title="Save Changes" onPress={handleSubmit as any} />
+            <View style={styles.emptyComponent} />
             <Button
-              title={task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+              title={task.completed ? 'Incomplete' : 'Completed'}
               onPress={() => {
                 toggleTaskCompletion(task.id);
                 navigation.goBack();
@@ -73,7 +72,7 @@ const EditTaskScreen: React.FC<Props> = () => {
     </Animatable.View>
   );
 };
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -89,6 +88,9 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 8,
   },
+  emptyComponent:{
+    height: 5
+  }
 });
-
+ 
 export default EditTaskScreen;
