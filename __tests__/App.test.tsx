@@ -1,17 +1,21 @@
-/**
- * @format
- */
-
-import 'react-native';
+// Import necessary modules and dependencies for testing
 import React from 'react';
+import { render } from '@testing-library/react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { TaskProvider } from '../src/context/TaskContext';
 import App from '../App';
 
-// Note: import explicitly to use the types shipped with jest.
-import {it} from '@jest/globals';
+describe('<App />', () => {
+  it('renders correctly', () => {
+    const { getByTestId } = render(
+      <GestureHandlerRootView>
+        <TaskProvider>
+          <App />
+        </TaskProvider>
+      </GestureHandlerRootView>
+    );
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
-
-it('renders correctly', () => {
-  renderer.create(<App />);
+    // Assert that the component rendered correctly
+    expect(getByTestId('app-root')).toBeDefined();
+  });
 });
